@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>National Boiler Corrosion Prediction &amp; State-Wise Control System — India Industrial Diagnostic Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-block">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v8"></path>
+            <path d="m4.93 10.93 1.41 1.41"></path>
+            <path d="M2 18h2"></path>
+            <path d="M20 18h2"></path>
+            <path d="m19.07 10.93-1.41 1.41"></path>
+            <path d="M22 22H2"></path>
+            <path d="m16 6-4 4-4-4"></path>
+            <path d="M16 18a4 4 0 0 0-8 0"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-badge">INDIAN BOILER REGULATIONS (IBR) &amp; ASME COMPLIANT</div>
+          <h1 class="brand-title">BoilerCorr<span class="highlight">India</span></h1>
+          <p class="brand-subtitle">State-Wise Factory Corrosion Predictive Analytics &amp; Mitigation Engineering Suite</p>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#heatmap-section" class="nav-item active">GIS Heatmap</a>
+        <a href="#simulator-section" class="nav-item">Predictive Engine</a>
+        <a href="#components-section" class="nav-item">Boiler Anatomy</a>
+        <a href="#state-plan-section" class="nav-item">State Control Plans</a>
+        <a href="#matrix-section" class="nav-item">National Matrix</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="quickAuditBtn" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Export Audit Plan
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Executive Summary Banner -->
+  <section class="kpi-banner">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Monitored States &amp; UTs</span>
+        <div class="kpi-value" id="kpiStatesCount">28 States</div>
+        <span class="kpi-sub">Across 8 Regional Agro-Industrial Belts</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Dominant Factory Types</span>
+        <div class="kpi-value text-accent">Power, Sugar, Chem, Steel</div>
+        <span class="kpi-sub">Thermal, Co-gen, Refinery &amp; Pulp Boilers</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Critical Vulnerability</span>
+        <div class="kpi-value text-danger" id="kpiTopVulnerability">Oxygen Pitting &amp; Acid Dewpoint</div>
+        <span class="kpi-sub">High-Ash Indian Coal &amp; Coastal Salinity</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Selected State Risk Rating</span>
+        <div class="kpi-value text-warning" id="kpiCurrentRisk">High (CSI 0.74)</div>
+        <span class="kpi-sub" id="kpiCurrentStateName">Gujarat — Coastal Petrochem Belt</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="main-layout">
+
+    <!-- Left Column: Map & State Selector -->
+    <section id="heatmap-section" class="panel map-panel">
+      <div class="panel-header">
+        <div>
+          <h2>01 — India Industrial Geo-Corrosion Heatmap</h2>
+          <p class="panel-desc">Click any state to load industrial cluster diagnostics, fuel profiles, and tailor-made control plans.</p>
+        </div>
+        <div class="filter-pills" id="regionFilters">
+          <button class="pill active" data-filter="all">All States</button>
+          <button class="pill" data-filter="coastal">Coastal Saline</button>
+          <button class="pill" data-filter="coal">Coal &amp; Metal Belt</button>
+          <button class="pill" data-filter="sugar">Agro/Sugar</button>
+          <button class="pill" data-filter="arid">Hard Water/Arid</button>
+        </div>
+      </div>
+
+      <div class="map-wrapper">
+        <div class="map-controls">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <select id="stateSelectDropdown" class="state-select"></select>
+          </div>
+          <div class="map-legend">
+            <span class="legend-item"><span class="legend-dot dot-low"></span>Low (&lt; 2 mpy)</span>
+            <span class="legend-item"><span class="legend-dot dot-mod"></span>Moderate (2-5 mpy)</span>
+            <span class="legend-item"><span class="legend-dot dot-high"></span>High (5-10 mpy)</span>
+            <span class="legend-item"><span class="legend-dot dot-severe"></span>Severe (&gt; 10 mpy)</span>
+          </div>
+        </div>
+
+        <!-- Interactive SVG Map of India -->
+        <div class="svg-container" id="indiaMapContainer">
+          <!-- Rendered dynamically by script.js -->
+        </div>
+
+        <div class="map-footer-info">
+          <span id="mapHoverInfo">Hover or click a state to inspect local water hardness, fuel sulfur %, and factory risk.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Predictive Engine Simulator -->
+    <section id="simulator-section" class="panel simulator-panel">
+      <div class="panel-header">
+        <div>
+          <h2>02 — Predictive Corrosion Simulation Engine</h2>
+          <p class="panel-desc">Multi-variable electrochemical and thermodynamic rate prediction based on ASME PTC 19.11 &amp; IS 10392.</p>
+        </div>
+        <button id="resetSimBtn" class="btn btn-sm btn-outline">↺ Reset to State Baseline</button>
+      </div>
+
+      <div class="simulator-grid">
+
+        <!-- Controls Sub-panel -->
+        <div class="sim-controls">
+          <h3 class="group-title">A. Feedwater &amp; Boiler Water Chemistry</h3>
+
+          <div class="control-row">
+            <div class="label-wrap">
+              <label for="pHInput">Feedwater pH</label>
+              <span class="val-badge" id="pHVal">9.2</span>
+            </div>
+            <input type="range" id="pHInput" min="6.5" max="11.5" step="0.1" value="9.2">
+            <div class="range-bounds"><span>6.5 (Acid Attack)</span><span>9.2-10.5 (Ideal Magnetite)</span><span>11.5 (Caustic)</span></div>
+          </div>
+
+          <div class="control-row">
+            <div class="label-wrap">
+              <label for="doInput">Dissolved Oxygen (DO)</label>
+              <span class="val-badge" id="doVal">15 ppb</span>
+            </div>
+            <input type="range" id="doInput" min="0" max="150" step="1" value="15">
+            <div class="range-bounds"><span>&lt; 5 ppb (Deaerated)</span><span>20 ppb</span><span>&gt; 50 ppb (Severe Pitting)</span></div>
+          </div>
+
+          <div class="control-row">
+            <div class="label-wrap">
+              <label for="tdsInput">Boiler Water TDS &amp; Chlorides</label>
+              <span class="val-badge" id="tdsVal">450 ppm</span>
+            </div>
+            <input type="range" id="tdsInput" min="10" max="3000" step="25" value="450">
+            <div class="range-bounds"><span>50 ppm (DM Water)</span><span>500 ppm</span><span>3000 ppm (Saline Scaling)</span></div>
+          </div>
+
+          <h3 class="group-title">B. Thermodynamics &amp; Fuel Parameters</h3>
+
+          <div class="control-row">
+            <div class="label-wrap">
+              <label for="pressureInput">Operating Pressure</label>
+              <span class="val-badge" id="pressureVal">65 bar</span>
+            </div>
+            <input type="range" id="pressureInput" min="10" max="250" step="5" value="65">
+            <div class="range-bounds"><span>10 bar (Low/Sugar)</span><span>65 bar (Medium)</span><span>250 bar (Supercritical)</span></div>
+          </div>
+
+          <div class="control-row">
+            <div class="label-wrap">
+              <label for="sulfurInput">Fuel Sulfur Content (S %)</label>
+              <span class="val-badge" id="sulfurVal">0.6 %</span>
+            </div>
+            <input type="range" id="sulfurInput" min="0.1" max="4.0" step="0.1" value="0.6">
+            <div class="range-bounds"><span>0.3% (Low-S Coal)</span><span>0.8% (Ind. Coal)</span><span>3.5% (Petcoke/HFO)</span></div>
+          </div>
+
+          <div class="control-row">
+            <div class="label-wrap">
+              <label for="flueTempInput">Flue Gas Exit Temperature</label>
+              <span class="val-badge" id="flueTempVal">135 °C</span>
+            </div>
+            <input type="range" id="flueTempInput" min="90" max="200" step="2" value="135">
+            <div class="range-bounds"><span>&lt;115°C (Acid Dew Point Zone)</span><span>140°C (Safe)</span><span>190°C</span></div>
+          </div>
+
+          <div class="control-row select-row">
+            <label for="exposureTypeSelect">Factory Atmospheric Environment</label>
+            <select id="exposureTypeSelect">
+              <option value="marine">Coastal Marine Saline (High Cl⁻ Aerosol)</option>
+              <option value="industrial" selected>Heavy Industrial Acidic (SO₂ / Dust Fallout)</option>
+              <option value="inland_arid">Inland Arid / High Hardness Aquifer</option>
+              <option value="tropical_humid">Tropical Monsoonal / High Humidity</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Output Gauge & Diagnostic Breakdown -->
+        <div class="sim-outputs">
+          <div class="gauge-card">
+            <span class="card-tag">PREDICTED CORROSION RATE</span>
+            <div class="gauge-dial-container">
+              <div class="rate-number" id="predictedRateDisplay">4.82</div>
+              <div class="rate-units">mpy <span class="rate-metric" id="predictedRateMetric">(0.122 mm/yr)</span></div>
+              <div class="severity-badge" id="severityBadge">MODERATE CORROSION</div>
+            </div>
+
+            <div class="lifespan-block">
+              <div class="lifespan-item">
+                <span class="ls-label">Estimated Tube Remaining Life</span>
+                <span class="ls-val" id="tubeLifeDisplay">14.2 Years</span>
+              </div>
+              <div class="lifespan-item">
+                <span class="ls-label">Acid Dew Point (T<sub>adp</sub>)</span>
+                <span class="ls-val" id="acidDewPointDisplay">128.4 °C</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Factor Contribution Breakdown -->
+          <div class="factor-breakdown-card">
+            <h4>Corrosion Driving Factor Weightage</h4>
+            <div class="factor-bars">
+              <div class="f-bar-row">
+                <div class="f-name"><span>Dissolved Oxygen (DO) Pitting</span><strong id="pctDO">32%</strong></div>
+                <div class="f-progress"><div class="f-fill" id="barDO" style="width: 32%;"></div></div>
+              </div>
+              <div class="f-bar-row">
+                <div class="f-name"><span>Chloride &amp; TDS Deposition</span><strong id="pctTDS">24%</strong></div>
+                <div class="f-progress"><div class="f-fill" id="barTDS" style="width: 24%;"></div></div>
+              </div>
+              <div class="f-bar-row">
+                <div class="f-name"><span>Flue Gas Acid Dew Point (SO₃)</span><strong id="pctAcid">22%</strong></div>
+                <div class="f-progress"><div class="f-fill" id="barAcid" style="width: 22%;"></div></div>
+              </div>
+              <div class="f-bar-row">
+                <div class="f-name"><span>pH Imbalance (Caustic/Acid)</span><strong id="pctPH">12%</strong></div>
+                <div class="f-progress"><div class="f-fill" id="barPH" style="width: 12%;"></div></div>
+              </div>
+              <div class="f-bar-row">
+                <div class="f-name"><span>Pressure &amp; Thermal Stress</span><strong id="pctStress">10%</strong></div>
+                <div class="f-progress"><div class="f-fill" id="barStress" style="width: 10%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Primary Active Hazard Alert -->
+          <div class="hazard-alert-box" id="hazardAlertBox">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title" id="alertTitle">Oxygen Pitting Risk in Economizer</div>
+              <div class="alert-desc" id="alertDesc">DO levels exceed 10 ppb threshold. High probability of localized micro-tuberculation along economizer inlet headers and boiler tubes.</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Full Width: Boiler Anatomy & Component Vulnerability -->
+    <section id="components-section" class="panel components-panel">
+      <div class="panel-header">
+        <div>
+          <h2>03 — Boiler Sub-System Vulnerability &amp; Degradation Modes</h2>
+          <p class="panel-desc">Interactive inspection of thermal boiler sub-components, failure mechanisms, and localized corrosion vectors.</p>
+        </div>
+      </div>
+
+      <div class="components-grid">
+        <div class="component-nav" id="componentTabs">
+          <button class="comp-btn active" data-comp="economizer">
+            <span class="comp-num">01</span>
+            <div><strong>Economizer Tubes</strong><span>Dissolved O₂ Pitting &amp; Flue Gas Scour</span></div>
+          </button>
+          <button class="comp-btn" data-comp="waterwalls">
+            <span class="comp-num">02</span>
+            <div><strong>Waterwall &amp; Evaporators</strong><span>Under-Deposit Caustic Gouging &amp; DNB</span></div>
+          </button>
+          <button class="comp-btn" data-comp="superheater">
+            <span class="comp-num">03</span>
+            <div><strong>Superheater / Reheater</strong><span>High-Temp Coal Ash Corrosion &amp; SCC</span></div>
+          </button>
+          <button class="comp-btn" data-comp="drum">
+            <span class="comp-num">04</span>
+            <div><strong>Steam Drum &amp; Mud Drum</strong><span>Caustic Embrittlement &amp; Thermal Cycling</span></div>
+          </button>
+          <button class="comp-btn" data-comp="aph">
+            <span class="comp-num">05</span>
+            <div><strong>Air Preheater (APH) &amp; Ducting</strong><span>Sulfuric Acid Dew Point Condensation</span></div>
+          </button>
+          <button class="comp-btn" data-comp="deaerator">
+            <span class="comp-num">06</span>
+            <div><strong>Deaerator &amp; Condensate Lines</strong><span>Carbonic Acid Flow-Accelerated Corrosion (FAC)</span></div>
+          </button>
+        </div>
+
+        <div class="component-detail" id="componentDetailCard">
+          <!-- Dynamic Component View populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- State-Wise Deep Dive & Comprehensive Control Plan -->
+    <section id="state-plan-section" class="panel state-plan-panel">
+      <div class="panel-header">
+        <div>
+          <h2>04 — State-Specific Factory Profile &amp; Targeted Mitigation Plan</h2>
+          <p class="panel-desc">Detailed engineering control plan tailored to the selected state's dominant industries, raw water chemistry, and fuel exposure.</p>
+        </div>
+        <div class="state-badge-header" id="stateHeaderBadge">
+          <span class="badge-flag">STATE PROFILE</span>
+          <span class="badge-name" id="selectedStateHeaderTitle">Gujarat</span>
+        </div>
+      </div>
+
+      <div class="state-plan-grid">
+
+        <!-- Left: State Industrial Exposure Summary -->
+        <div class="state-summary-col">
+          <div class="info-card">
+            <h3>🏭 Dominant Industrial Clusters</h3>
+            <div id="stateClustersList" class="tags-list"></div>
+          </div>
+
+          <div class="info-card">
+            <h3>🌊 Water Source &amp; Environmental Exposure</h3>
+            <div class="state-env-specs" id="stateEnvSpecs"></div>
+          </div>
+
+          <div class="info-card">
+            <h3>🔥 Primary Boiler Fuels Used</h3>
+            <div id="stateFuelsList" class="tags-list"></div>
+          </div>
+
+          <div class="info-card">
+            <h3>⚠️ Key Corrosion Vulnerabilities</h3>
+            <div id="stateVulnerabilitiesList" class="vuln-list"></div>
+          </div>
+        </div>
+
+        <!-- Right: 5-Tier Engineered Mitigation Plan -->
+        <div class="control-plan-col">
+          <div class="plan-header-strip">
+            <h3>5-TIER STATE CORROSION CONTROL PROTOCOL</h3>
+            <span class="code-ref">ASME SEC VII / IS 10392 / IBR CODES</span>
+          </div>
+
+          <div class="plan-steps" id="controlPlanStepsContainer">
+            <!-- Populated dynamically by script.js -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- National State Matrix Table -->
+    <section id="matrix-section" class="panel matrix-panel">
+      <div class="panel-header">
+        <div>
+          <h2>05 — All-India State Boiler Corrosion Comparative Matrix</h2>
+          <p class="panel-desc">Consolidated multi-state benchmarking matrix with raw water hardness, industrial clusters, dominant corrosion mechanisms, and CSI ratings.</p>
+        </div>
+        <div class="table-actions">
+          <input type="text" id="tableSearchInput" placeholder="Search state, industry or fuel..." class="table-search">
+          <button id="exportCsvBtn" class="btn btn-sm btn-outline">⬇ Download CSV</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table" id="statesMasterTable">
+          <thead>
+            <tr>
+              <th>State / UT</th>
+              <th>Geographic Zone</th>
+              <th>Primary Industrial Sector</th>
+              <th>Major Water Source</th>
+              <th>Raw Water Hardness / Cl⁻</th>
+              <th>Dominant Corrosion Risk</th>
+              <th>Corrosion Severity Index (CSI)</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="statesTableBody">
+            <!-- Populated dynamically by script.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Engineering Audit Sheet Print View -->
+  <div class="modal-overlay" id="auditModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>Engineering Field Boiler Corrosion Audit Sheet</h3>
+          <p class="modal-subtitle" id="auditModalSubtitle">Inspection &amp; Mitigation Dossier for Indian State Factories</p>
+        </div>
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="auditModalBody">
+        <!-- Rendered dynamically for printing -->
+      </div>
+      <div class="modal-footer">
+        <button id="printAuditBtn" class="btn btn-primary">🖨️ Print / Save as PDF</button>
+        <button id="closeModalBtn2" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p><strong>BoilerCorrIndia Engineering Diagnostics Suite</strong> — Formulated in alignment with Central Boilers Board (CBB), Indian Boiler Regulations (IBR 1950 &amp; Amendments), IS 10392 (Feedwater &amp; Boiler Water Standards), IS 10496, ASME Section I/VII &amp; NACE/AMPP Guidelines.</p>
+      <p class="footer-note">Industrial corrosion predictive algorithms utilize thermodynamic solubility equations, Dew-Point condensation thermodynamics, and empirical field survey coefficients across Indian industrial estates. All mitigation recommendations must be cross-verified with registered Boiler Inspectors and plant Chief Geotechnical/Chemical Engineers.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
